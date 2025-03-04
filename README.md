@@ -8,4 +8,8 @@ npm run dev
 ```
 
 
+Sportwave is a platform for sports enthusiasts to connect and share their passion for sports.
+
+
+
 

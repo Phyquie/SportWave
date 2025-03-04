@@ -1,4 +1,4 @@
-import Image from "next/image";
+'use client'
 import Example from "./home/page";
 import Head from "next/head";
 

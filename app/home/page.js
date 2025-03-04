@@ -14,6 +14,7 @@ import Image from 'next/image'
 import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from 'react-icons/fa';
 import { TfiMenuAlt } from "react-icons/tfi";
 import Login from '../components/Login';
+import { useStore } from '@/zustand/store';
 
 
 
@@ -28,6 +29,11 @@ const sigmar = Sigmar({ subsets: ['latin'], weight: ['400'] })
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [showLogin, setShowLogin] = useState(false)
+  const { ShowSignup, setShowSignup } = useStore();
+  const LoginClick = () => {
+    setShowSignup(false);
+    setShowLogin(true);
+  }
   return (
     <div className="bg-white max-w-screen flex flex-col items-center pt-24">
       <header className="top-0 left-0 w-full bg-white shadow-md z-50 fixed">
@@ -43,7 +49,7 @@ export default function Example() {
             ))}
           </div>
           <div className="hidden md:flex">
-            <a href="#" className={`text-gray-900 font-bold text-2xl hover:text-indigo-600 ${sigmar.className } hover:bg-slate-200 transition-all duration-300 scale-100 hover:scale-110 hover:rounded-lg p-2` } onClick={() => setShowLogin(true)}>Log in</a>
+            <a href="#" className={`text-gray-900 font-bold text-2xl hover:text-indigo-600 ${sigmar.className } hover:bg-slate-200 transition-all duration-300 scale-100 hover:scale-110 hover:rounded-lg p-2` } onClick={LoginClick}>Log in</a>
           </div>
           <button className="md:hidden p-2 text-gray-700" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <TfiMenuAlt className="text-2xl text-indigo-600" /> : <TfiMenuAlt className="text-2xl" />}

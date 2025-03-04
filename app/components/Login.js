@@ -1,4 +1,4 @@
-"use client"
+
 import { Sigmar } from 'next/font/google'
 import Google from '../../public/photos/google.png'
 import Image from 'next/image'
@@ -9,6 +9,11 @@ import { useState } from 'react';
 import { useStore } from '@/zustand/store';
 import Signup from './Signup';
 import { IoMdMail } from "react-icons/io";
+import { signInWithPopup , GoogleAuthProvider } from "firebase/auth";
+import { auth ,googleProvider } from "@/firebase/firebase";
+
+
+
 
 
 
@@ -20,9 +25,45 @@ import { IoMdMail } from "react-icons/io";
 const sigmar = Sigmar({ subsets: ['latin'], weight: ['400'] })
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     
     const { ShowSignup, setShowSignup } = useStore();
-   
+    //const googleProvider = new GoogleAuthProvider();
+
+  
+    const signInWithGoogle = async () => {
+        try {
+            console.log("Signing in with Google");
+            setError(null);
+            setIsLoading(true);
+            const result = await signInWithPopup(auth, googleProvider);
+            const user =  await result.user;
+            console.log("User signed in:", user);
+            const token = user.uid;
+            console.log( "TOken is" ,token);
+           
+
+            const response = await fetch("http://localhost:3000/api/auth/google", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ token_google: token ,name: user.displayName ,email: user.email ,photo_url: user.photoURL }),
+            });
+           if(!response.ok) {
+            throw new Error("Failed to sign in with Google through the server");
+           }
+
+            console.log("Google login successful");
+         // Here you might want to redirect or update your app state
+        } catch (error) {
+            setError(error.message);
+            console.error("Error signing in with Google:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
   return (
     ShowSignup ? <Signup /> : 
     <div className='flex flex-col items-center  h-[70vh] w-96 rounded-3xl bg-gradient-to-b from-indigo-500 via-indigo-100 to-white'>
@@ -53,8 +94,18 @@ const Login = () => {
        <hr className="flex-grow border-gray-300"></hr>
        </div>
        <div className='flex items-center justify-center w-2/5'>
-       <Image src={Google} alt='Google' className='w-1/2 p-2 rounded-xl shadow-xl hover:cursor-pointer opacity-95 hover:opacity-100 hover:scale-105 transition-all duration-300' />
+       <Image 
+            src={Google} 
+            alt='Google' 
+            className={`w-1/2 p-2 rounded-xl shadow-xl hover:cursor-pointer opacity-95 
+                ${isLoading ? 'opacity-50' : 'hover:opacity-100 hover:scale-105'} 
+                transition-all duration-300`}
+            onClick={!isLoading ? signInWithGoogle : undefined} 
+        />
        </div>
+       {error && (
+        <p className="text-red-500 text-sm mt-2">{error}</p>
+    )}
        <div className = "h-1 bg-gray-400 mt-4 w-3/4"></div>
 
        <div className='flex  items-center justify-center w-2/5 mt-3 text-center'>
