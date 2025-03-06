@@ -11,13 +11,7 @@ import Signup from './Signup';
 import { IoMdMail } from "react-icons/io";
 import { signInWithPopup , GoogleAuthProvider } from "firebase/auth";
 import { auth ,googleProvider } from "@/firebase/firebase";
-
-
-
-
-
-
-
+import { useMutation } from '@tanstack/react-query';
 
 
 
@@ -26,22 +20,57 @@ const sigmar = Sigmar({ subsets: ['latin'], weight: ['400'] })
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [email , setEmail] = useState("");
+    const [password , setPassword] = useState("");
+    const { setShowLogin } = useStore();
+    const { ShowSignup , setShowSignup } = useStore();
     
-    const { ShowSignup, setShowSignup } = useStore();
     //const googleProvider = new GoogleAuthProvider();
 
-  
+    const {mutate : login , isError ,isLoading} = useMutation({
+        mutationFn: (data) => {
+            return fetch("/api/auth/login", {
+                method: "POST",
+                body: JSON.stringify(data),
+            });
+        },
+        onSuccess: () => {
+            console.log("Login successful");
+            setShowLogin(false);
+            setShowSignup(false);
+            
+        },
+        onError: (error) => {
+            console.log("Login failed", error);
+        }
+    });
+     const handleLogin = (e) => {
+        e.preventDefault();
+        login({email , password});
+     }
+     const handleChange = (e) => {
+        const {name , value} = e.target;
+        switch(name){
+            case "email":
+                setEmail(value);
+                break;
+            case "password":
+                setPassword(value);
+                break;
+        }
+     }
+
+    
     const signInWithGoogle = async () => {
         try {
             console.log("Signing in with Google");
             setError(null);
-            setIsLoading(true);
+           
             const result = await signInWithPopup(auth, googleProvider);
             const user =  await result.user;
             console.log("User signed in:", user);
             const token = user.uid;
-            console.log( "TOken is" ,token);
+            console.log( "Token is" ,token);
            
 
             const response = await fetch("http://localhost:3000/api/auth/google", {
@@ -60,9 +89,7 @@ const Login = () => {
         } catch (error) {
             setError(error.message);
             console.error("Error signing in with Google:", error);
-        } finally {
-            setIsLoading(false);
-        }
+        } 
     };
   return (
     ShowSignup ? <Signup /> : 
@@ -71,19 +98,19 @@ const Login = () => {
         <div className='flex flex-col p-2 mt-6 items-center justify-center w-[80%]'>
         <div className="flex items-center w-full bg-white rounded-xl p-2 mt-4 shadow-xl">
         <IoMdMail className="text-5xl text-gray-700 bg-white rounded-xl p-2" />
-        <input type="text" placeholder="Email" className={`p-2 rounded-xl w-full text-black focus:outline-none ${sigmar.className}`} />
+        <input type="text" placeholder="Email" className={`p-2 rounded-xl w-full text-black focus:outline-none ${sigmar.className}`} onChange={handleChange} name="email" />
         </div>
 
         <div className='flex  items-center justify-center w-full bg-white rounded-xl p-2 mt-4 shadow-xl'>
         <IoMdLock className="text-5xl text-gray-700 bg-white rounded-xl p-2" />
-        <input type={showPassword ? "text" : "password"} placeholder='Password' className={`p-2 rounded-xl w-full text-black ${sigmar.className}`} />
+        <input type={showPassword ? "text" : "password"} placeholder='Password' className={`p-2 rounded-xl w-full text-black ${sigmar.className}`} onChange={handleChange} name="password" />
         {showPassword ? <BsFillEyeFill className='text-5xl text-gray-700 bg-white rounded-xl p-2' onClick={() => setShowPassword(!showPassword)} /> : <RiEyeCloseFill className='text-5xl text-gray-700 bg-white rounded-xl p-2' onClick={() => setShowPassword(!showPassword)} />}
         </div>
         </div>
         <div>
         </div>
         <div className='flex items-center justify-center w-full mt-4'>
-        <button className={`w-1/2 p-2  bg-blue-500 text-white rounded-xl shadow-xl hover:bg-blue-600 ${sigmar.className} hover:scale-105 transition-all duration-300`}>Get Started</button>
+        <button className={`w-1/2 p-2  bg-blue-500 text-white rounded-xl shadow-xl hover:bg-blue-600 ${sigmar.className} hover:scale-105 transition-all duration-300`} onClick={handleLogin}>Get Started</button>
         </div>
 
 

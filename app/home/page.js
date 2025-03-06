@@ -1,5 +1,4 @@
 'use client'
-
 import { useState } from 'react'
 import { Sigmar } from 'next/font/google'
 import basketball from '../../public/photos/pexels-king-siberia-1123639-2277981.jpg'
@@ -15,6 +14,7 @@ import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from 'react-icons/fa';
 import { TfiMenuAlt } from "react-icons/tfi";
 import Login from '../components/Login';
 import { useStore } from '@/zustand/store';
+import Link from 'next/link';
 
 
 
@@ -28,10 +28,12 @@ const sigmar = Sigmar({ subsets: ['latin'], weight: ['400'] })
 
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [showLogin, setShowLogin] = useState(false)
+  const { ShowLogin, setShowLogin } = useStore();
   const { ShowSignup, setShowSignup } = useStore();
+  const { ShowOtp, setShowOtp } = useStore();
   const LoginClick = () => {
     setShowSignup(false);
+    setShowOtp(false);
     setShowLogin(true);
   }
   return (
@@ -66,13 +68,13 @@ export default function Example() {
           </div>
         )}
       </header>
-      {showLogin && (
+      {ShowLogin && (
   <div
     className="w-full h-full top-0 left-0 fixed flex items-center justify-center z-50 bg-black bg-opacity-40 backdrop-blur-sm shadow-2xl"
     onClick={() => setShowLogin(false)} // Close modal when clicking outside
   >
     <div onClick={(e) => e.stopPropagation()}> 
-      <Login showLogin={showLogin} setShowLogin={setShowLogin} />
+      <Login showLogin={ShowLogin} setShowLogin={setShowLogin} />
     </div>
   </div>
 )}
@@ -99,11 +101,11 @@ export default function Example() {
           <h1 className={`text-5xl font-semibold text-gray-900 ${sigmar.className} text-center mb-10 `}>Services</h1>
           <div className="mt-6 flex flex-col items-center space-y-6">
   {[
-    { src: services1, alt: "Services 1", text: "Host an Event" },
-    { src: services2, alt: "Services 2", text: "Find a Event" },
-    { src: services3, alt: "Services 3", text: "Find a Player" },
+    { src: services1, alt: "Services 1", text: "Host an Event", href: "/service/hostvenue" },
+    { src: services2, alt: "Services 2", text: "Find a Event", href: "/service/findevent" },
+    { src: services3, alt: "Services 3", text: "Find a Player", href: "/service/findplayer" },
   ].map((service, index) => (
-    <div key={index} className="relative group rounded-3xl">
+    <Link href={service.href} key={index} className="relative group rounded-3xl">
       {/* Image */}
       <Image src={service.src} alt={service.alt} 
         className="max-w-full h-72 object-cover p-1 rounded-3xl border-2 border-gray-500 mb-10 transition-all duration-500 group-hover:border-indigo-600 group-hover:blur-sm"
@@ -113,7 +115,7 @@ export default function Example() {
           {service.text}
         </span>
       </div>
-    </div>
+    </Link>
   ))}
 </div>
 
