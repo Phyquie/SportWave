@@ -1,4 +1,3 @@
-
 import { Sigmar } from 'next/font/google'
 import Google from '../../public/photos/google.png'
 import Image from 'next/image'
@@ -12,12 +11,13 @@ import { IoMdMail } from "react-icons/io";
 import { signInWithPopup , GoogleAuthProvider } from "firebase/auth";
 import { auth ,googleProvider } from "@/firebase/firebase";
 import { useMutation } from '@tanstack/react-query';
-
+import { useRouter } from 'next/navigation';
 
 
 
 const sigmar = Sigmar({ subsets: ['latin'], weight: ['400'] })
 const Login = () => {
+    const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(null);
     const [email , setEmail] = useState("");
@@ -38,7 +38,7 @@ const Login = () => {
             console.log("Login successful");
             setShowLogin(false);
             setShowSignup(false);
-            
+            router.push('/service/myprofile');
         },
         onError: (error) => {
             console.log("Login failed", error);
@@ -67,30 +67,57 @@ const Login = () => {
             setError(null);
            
             const result = await signInWithPopup(auth, googleProvider);
-            const user =  await result.user;
-            console.log("User signed in:", user);
+            const user = result.user;
             const token = user.uid;
-            console.log( "Token is" ,token);
            
-
-            const response = await fetch("http://localhost:3000/api/auth/google", {
+            const response = await fetch("/api/auth/google", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ token_google: token ,name: user.displayName ,email: user.email ,photo_url: user.photoURL }),
+                body: JSON.stringify({ 
+                    token_google: token,
+                    name: user.displayName,
+                    email: user.email,
+                    photo_url: user.photoURL 
+                }),
             });
-           if(!response.ok) {
-            throw new Error("Failed to sign in with Google through the server");
-           }
+           
+            if (!response.ok) {
+                throw new Error("Failed to sign in with Google through the server");
+            }
 
             console.log("Google login successful");
-         // Here you might want to redirect or update your app state
+            
+            // Handle state updates and navigation in a separate async function
+            await handleSuccessfulLogin();
+            
         } catch (error) {
             setError(error.message);
             console.error("Error signing in with Google:", error);
         } 
     };
+
+    // Add this new function right after signInWithGoogle
+    const handleSuccessfulLogin = async () => {
+        try {
+            console.log("Starting post-login actions");
+            // First update the states
+            setShowLogin(false);
+            setShowSignup(false);
+            
+            console.log("States updated, starting navigation");
+            // Force a small delay before navigation
+            setTimeout(() => {
+                router.replace('/service/myprofile');
+                router.refresh();
+                console.log("Navigation triggered");
+            }, 100);
+        } catch (err) {
+            console.error("Error in post-login handling:", err);
+        }
+    };
+
   return (
     ShowSignup ? <Signup /> : 
     <div className='flex flex-col items-center  h-[70vh] w-96 rounded-3xl bg-gradient-to-b from-indigo-500 via-indigo-100 to-white'>
@@ -110,7 +137,7 @@ const Login = () => {
         <div>
         </div>
         <div className='flex items-center justify-center w-full mt-4'>
-        <button className={`w-1/2 p-2  bg-blue-500 text-white rounded-xl shadow-xl hover:bg-blue-600 ${sigmar.className} hover:scale-105 transition-all duration-300`} onClick={handleLogin}>Get Started</button>
+        <button className={`w-1/2 p-2  bg-blue-500 text-white rounded-xl shadow-xl hover:bg-blue-600 ${sigmar.className} hover:scale-105 transition-all duration-300`} onClick={handleLogin} disabled={isLoading}>{isLoading ? 'Signing In...' : 'Get Started'}</button>
         </div>
 
 
