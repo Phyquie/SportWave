@@ -6,7 +6,7 @@ export const generateToken = async (user) => {
     console.log(token);
     const cookieStore = cookies();
     cookieStore.set("token", token, { 
-        httpOnly: true, 
+        // httpOnly: true, 
         secure: process.env.NODE_ENV !== "development", 
         sameSite: "strict", 
         maxAge: 30 * 24 * 60 * 60 * 1000 

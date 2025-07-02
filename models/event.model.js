@@ -8,7 +8,7 @@ const eventSchema = new mongoose.Schema({
     location: { type: String, required: true },
     price: { type: Number, required: false },
     image: { type: String, required: false },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    host: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     players: { type: [mongoose.Schema.Types.ObjectId], ref: 'User', required: false },
 });
 

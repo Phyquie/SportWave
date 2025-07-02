@@ -14,7 +14,6 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 
-
 const sigmar = Sigmar({ subsets: ['latin'], weight: ['400'] })
 const Login = () => {
     const router = useRouter();
@@ -22,7 +21,7 @@ const Login = () => {
     const [error, setError] = useState(null);
     const [email , setEmail] = useState("");
     const [password , setPassword] = useState("");
-    const { setShowLogin } = useStore();
+    const { setShowLogin , setIsLogIn } = useStore();
     const { ShowSignup , setShowSignup } = useStore();
     
     //const googleProvider = new GoogleAuthProvider();
@@ -36,9 +35,10 @@ const Login = () => {
         },
         onSuccess: () => {
             console.log("Login successful");
+            setIsLogIn(true);
             setShowLogin(false);
             setShowSignup(false);
-            router.push('/service/myprofile');
+            
         },
         onError: (error) => {
             console.log("Login failed", error);
@@ -59,7 +59,7 @@ const Login = () => {
                 break;
         }
      }
-
+ 
     
     const signInWithGoogle = async () => {
         try {
@@ -105,14 +105,8 @@ const Login = () => {
             // First update the states
             setShowLogin(false);
             setShowSignup(false);
+            setIsLogIn(true);
             
-            console.log("States updated, starting navigation");
-            // Force a small delay before navigation
-            setTimeout(() => {
-                router.replace('/service/myprofile');
-                router.refresh();
-                console.log("Navigation triggered");
-            }, 100);
         } catch (err) {
             console.error("Error in post-login handling:", err);
         }
@@ -151,6 +145,7 @@ const Login = () => {
        <Image 
             src={Google} 
             alt='Google' 
+            
             className={`w-1/2 p-2 rounded-xl shadow-xl hover:cursor-pointer opacity-95 
                 ${isLoading ? 'opacity-50' : 'hover:opacity-100 hover:scale-105'} 
                 transition-all duration-300`}

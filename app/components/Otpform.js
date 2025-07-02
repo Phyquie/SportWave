@@ -17,8 +17,13 @@ const Otpform = ({name , email , password}) => {
     }
     const handleOtpSubmit = () => {
         otpVerify({otp , email });
-        setShowOtp(false);
-        setShowSignup(false);
+        if(!isError)
+        {
+            setShowOtp(false);
+            setShowSignup(false);
+            setShowLogin(true);
+        }
+       
     }
 
 

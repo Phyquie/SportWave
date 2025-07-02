@@ -19,7 +19,7 @@ export const POST = async (req) => {
         const token = jwt.sign({ id: token_google }, process.env.JWT_SECRET, { expiresIn: "30d" });
         const cookieStore = await cookies();
         cookieStore.set("token", token, {
-            httpOnly: true,
+            // httpOnly: ,
             secure: process.env.NODE_ENV !== "development",
             maxAge: 30 * 24 * 60 * 60 * 1000
         });

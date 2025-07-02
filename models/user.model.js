@@ -11,6 +11,12 @@ const userSchema = new mongoose.Schema({
     zip: { type: String, required: false },
     country: { type: String, required: false },
     photo_url: { type: String, required: false },
+    rating:{type:mongoose.Schema.Types.ObjectId, ref: 'Rating', required: false},
+    events_hosted:{type:mongoose.Schema.Types.ObjectId, ref: 'Event', required: false},
+    total_events_hosted:{type:Number, required: false},
+    total_rating:{type:Number, required: false},
+    Avg_rating:{type:Number, required: false},
+    
 }, { timestamps: true });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

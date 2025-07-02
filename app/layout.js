@@ -1,6 +1,10 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import QueryProvider from "./QueryProvider";
 import "./globals.css";
+import { Sigmar } from 'next/font/google'
+const sigmar = Sigmar({ subsets: ['latin'], weight: ['400'] })
+import Header from "./components/Header";
+import { Footer } from "./components/Footer";
 
 
 const geistSans = Geist({
@@ -28,7 +32,10 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <QueryProvider>
+          
+          <Header />
           {children}
+          <Footer />
         </QueryProvider>
         
       </body>

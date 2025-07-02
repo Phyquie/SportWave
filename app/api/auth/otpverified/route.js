@@ -8,8 +8,11 @@ export const POST = async (req) => {
     const { email, otp } = await req.json();
     const user = await TempUser.findOne({ email , otp});
     if(!user) {
-        return NextResponse.json({ message: "OTP is incorrect" }, { status: 400 });
+        return NextResponse.json({ message: "Temporary User not found" }, { status: 400 });
     }
+   if(user.otp !== otp) {
+    return NextResponse.json({ message: "OTP is incorrect" }, { status: 400 });
+   }
     
     const newUser = new User({ email, password: user.password, name: user.name });
     await newUser.save();
