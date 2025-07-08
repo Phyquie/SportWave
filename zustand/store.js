@@ -19,8 +19,17 @@ export const useStore = create(
       setHostEvent: (value) => set({ ShowHostEvent: value }),
       ShowMyProfile: false,
       setShowMyProfile: (value) => set({ ShowMyProfile: value }),
-      isLogIn: typeof window !== 'undefined' ? !!Cookies.get('token') : false,
+      isLogIn: false,
       setIsLogIn: (value) => set({ isLogIn: value }),
-    })
+      user: null,
+      setUser: (value) => set({ user: value }),
+    }),
+    {
+      name: 'sportwave-store',
+      partialize: (state) => ({
+        isLogIn: state.isLogIn,
+        user: state.user,
+      }),
+    }
   )
 );

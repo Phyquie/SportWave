@@ -9,11 +9,11 @@ export const POST = async (req) => {
     const { email, password } = await req.json();
     const user = await User.findOne({ email });
     if(!user) {
-        return NextResponse.json({ message: "User not found" }, { status: 400 });
+        return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if(!isPasswordCorrect) {
-        return NextResponse.json({ message: "Invalid password" }, { status: 400 });
+        return NextResponse.json({ error: "Invalid password" }, { status: 404 });
     }
     generateToken(user);
     return NextResponse.json({ message: "Login successful" }, { status: 200 });

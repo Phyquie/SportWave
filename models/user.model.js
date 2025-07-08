@@ -15,7 +15,13 @@ const userSchema = new mongoose.Schema({
     events_hosted:{type:mongoose.Schema.Types.ObjectId, ref: 'Event', required: false},
     total_events_hosted:{type:Number, required: false},
     total_rating:{type:Number, required: false},
-    Avg_rating:{type:Number, required: false},
+    avg_rating:{type:Number, required: false},
+    sports:{type:[String], required: false},
+    age:{type:Number, required: false},
+    gender:{type:String, required: false},
+    height:{type:Number, required: false},
+    weight:{type:Number, required: false},
+    bio:{type:String, required: false},
     
 }, { timestamps: true });
 

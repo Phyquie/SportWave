@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import User from "@/models/user.model";
 import connectDB from "@/utils/db";
+import { generateToken } from "@/utils/generatetoken";
 
 
 
@@ -32,6 +33,7 @@ export const POST = async (req) => {
             const newUser = new User({ google_id: token_google, name, email, photo_url, password: "" });
             await newUser.save();
             console.log("New user created" , newUser);
+            generateToken(newUser);
             return NextResponse.json({ message: "Login successful via Google" }, { status: 200 });
             }
             catch(error){
@@ -39,12 +41,22 @@ export const POST = async (req) => {
             }
             
         }
-        
+          
+        if(user.photo_url === null){
+            await User.findOneAndUpdate( 
+                { email },  // Changed from google_id to email for consistency
+                { google_id: token_google, name, photo_url: photo_url },
+                { new: true }
+            );
+        }
+        else{
         await User.findOneAndUpdate( 
             { email },  // Changed from google_id to email for consistency
-            { google_id: token_google, name, photo_url },
+            { google_id: token_google, name},
             { new: true }
         );
+    }
+        generateToken(user);
             return NextResponse.json({ message: "Login successful via Google" }, { status: 200 });
         }
         

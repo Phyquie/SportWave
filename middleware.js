@@ -36,5 +36,5 @@ export async function middleware(request) {
 
 // Apply middleware to all routes under /service/
 export const config = {
-    matcher: ['/service/:path*'],
+    matcher: ['/services/:path*'],
 };

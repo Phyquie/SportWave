@@ -1,10 +1,11 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import QueryProvider from "./QueryProvider";
 import "./globals.css";
-import { Sigmar } from 'next/font/google'
-const sigmar = Sigmar({ subsets: ['latin'], weight: ['400'] })
+import { Montserrat } from 'next/font/google'
+const montserrat = Montserrat({ subsets: ['latin'], weight: ['400'] })
 import Header from "./components/Header";
 import { Footer } from "./components/Footer";
+import { Toaster } from "react-hot-toast";
 
 
 const geistSans = Geist({
@@ -29,10 +30,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased ${montserrat.className}`}
       >
         <QueryProvider>
-          
+          <Toaster />
           <Header />
           {children}
           <Footer />
