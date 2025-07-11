@@ -1,13 +1,16 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useCustomMutation } from '@/custom_hooks/customMutation'
 import { Montserrat } from 'next/font/google'
 import toast from 'react-hot-toast'
 import { useStore } from '@/zustand/store'
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['400'] })
+import LocationPicker from '@/app/components/LocationPicker'
+import { latLng } from 'leaflet'
 
 const CreateEventPage = () => {
-    const { user } = useStore()
+    const { user, location, pinCode, lat, lng } = useStore();
+    console.log(location, pinCode)
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -18,8 +21,23 @@ const CreateEventPage = () => {
         price: '',
         NoOfSeats: '',
         images: [],
-        pin: ''
+        pin: '',
+        detailedLocation: '',
+        lat: '',
+        lng: ''
+
     })
+
+    // Update form data when store values change
+    useEffect(() => {
+        setFormData(prev => ({
+            ...prev,
+            location: location || '',
+            pin: pinCode || '',
+            lat: lat || '',
+            lng: lng || ''
+        }))
+    }, [location, pinCode])
 
     const { mutate: createEvent, isPending } = useCustomMutation('/api/event/createevent')
 
@@ -69,11 +87,14 @@ const CreateEventPage = () => {
             time: formData.time,
             price: parseFloat(formData.price) || 0,
             NoOfSeats: parseInt(formData.NoOfSeats),
-            images: formData.images, 
+            images: formData.images,
             players: [],
             host: user._id,
             isActive: true,
-            pin: formData.pin
+            pin: formData.pin,
+            detailedLocation: formData.detailedLocation,
+            lat: lat,
+            lng: lng
         }
 
         createEvent(eventData)
@@ -83,13 +104,14 @@ const CreateEventPage = () => {
             name: '',
             description: '',
             sport: '',
-            location: '',
+            location: location || '',
             date: '',
             time: '',
             price: '',
             NoOfSeats: '',
             images: [],
-            pin: ''
+            pin: pinCode || '',
+            detailedLocation: ''
         })
     }
 
@@ -175,15 +197,60 @@ const CreateEventPage = () => {
                     {/* Sport */}
                     <div className='space-y-2'>
                         <label className='block text-sm font-medium text-gray-700'>Sport *</label>
-                        <input
-                            type="text"
+                        <select
                             name="sport"
                             value={formData.sport}
                             onChange={handleInputChange}
-                            placeholder='e.g., Football, Basketball, Tennis'
-                            required
-                            className='w-full border-2 border-gray-300 p-3 rounded-md focus:border-blue-500 focus:outline-none'
-                        />
+                            className={`border-2 ${montserrat.className} w-full border-gray-300 p-2 rounded-md`}
+                        >
+                            <option value="">Select a sport</option>
+                            <option value="cricket">Cricket</option>
+                            <option value="football">Football</option>
+                            <option value="basketball">Basketball</option>
+                            <option value="tennis">Tennis</option>
+                            <option value="badminton">Badminton</option>
+                            <option value="baseball">Baseball</option>
+                            <option value="hockey">Hockey</option>
+                            <option value="golf">Golf</option>
+                            <option value="rugby">Rugby</option>
+                            <option value="swimming">Swimming</option>
+                            <option value="volleyball">Volleyball</option>
+                            <option value="table-tennis">Table Tennis</option>
+                            <option value="boxing">Boxing</option>
+                            <option value="wrestling">Wrestling</option>
+                            <option value="cycling">Cycling</option>
+                            <option value="skiing">Skiing</option>
+                            <option value="snowboarding">Snowboarding</option>
+                            <option value="surfing">Surfing</option>
+                            <option value="karate">Karate</option>
+                            <option value="judo">Judo</option>
+                            <option value="fencing">Fencing</option>
+                            <option value="archery">Archery</option>
+                            <option value="gymnastics">Gymnastics</option>
+                            <option value="equestrian">Equestrian</option>
+                            <option value="rowing">Rowing</option>
+                            <option value="sailing">Sailing</option>
+                            <option value="triathlon">Triathlon</option>
+                            <option value="weightlifting">Weightlifting</option>
+                            <option value="handball">Handball</option>
+                            <option value="softball">Softball</option>
+                            <option value="cricket">Cricket</option>
+                            <option value="field-hockey">Field Hockey</option>
+                            <option value="polo">Polo</option>
+                            <option value="darts">Darts</option>
+                            <option value="snooker">Snooker</option>
+                            <option value="billiards">Billiards</option>
+                            <option value="bowling">Bowling</option>
+                            <option value="skateboarding">Skateboarding</option>
+                            <option value="bmx">BMX</option>
+                            <option value="motorsport">Motorsport</option>
+                            <option value="hiking">Hiking</option>
+                            <option value="climbing">Climbing</option>
+                            <option value="paragliding">Paragliding</option>
+                            <option value="diving">Diving</option>
+
+
+                        </select>
                     </div>
 
                     {/* Location */}
@@ -198,9 +265,23 @@ const CreateEventPage = () => {
                             required
                             className='w-full border-2 border-gray-300 p-3 rounded-md focus:border-blue-500 focus:outline-none'
                         />
-                   
-                   
+                        <LocationPicker />
+
                     </div>
+
+                    <div className='space-y-2'>
+                        <label className='block text-sm font-medium text-gray-700'>Detailed Location(i.e Nearby landmark)</label>
+                        <input
+                            type="text"
+                            name="detailedLocation"
+                            value={formData.detailedLocation}
+                            onChange={handleInputChange}
+                            placeholder='Enter detailed location'
+                            required
+                            className='w-full border-2 border-gray-300 p-3 rounded-md focus:border-blue-500 focus:outline-none'
+                        />
+                    </div>
+
                     <div className='space-y-2'>
                         <label className='block text-sm font-medium text-gray-700'>Pin Code *</label>
                         <input

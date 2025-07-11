@@ -55,7 +55,7 @@ export default function Example() {
 
         <h1 className={`text-5xl mt-10 font-semibold text-gray-900 ${montserrat.className} text-center mb-10 `}>What can you do on Sportwave</h1>
         <div className="flex flex-row items-center justify-between space-x-6 w-3/4 mx-auto">
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col  w-80    items-center justify-center">
             <FaMagnifyingGlassLocation className="text-6xl text-indigo-600" />
             <p className={`text-2xl font-semibold text-gray-900 ${montserrat.className} text-center`}>Find Player Near You</p>
             <ul className={`text-lg text-gray-500 text-left ${montserrat.className} list-disc list-inside`}>
@@ -64,7 +64,7 @@ export default function Example() {
               <li>Connect with players and find your next game</li>
             </ul>
             </div>
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col w-80  items-center justify-center">
             <RiTeamLine className="text-6xl text-indigo-600" />
             <p className={`text-2xl font-semibold text-gray-900 ${montserrat.className} text-center`}> Join or Create a Team</p>
             <ul className={`text-lg text-gray-500 text-left ${montserrat.className} list-disc list-inside`}>
@@ -73,7 +73,7 @@ export default function Example() {
               <li>Manage team roster and player availability</li>
             </ul>
             </div>
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col w-80  items-center justify-center">
             <FaBaseballBall className="text-6xl text-indigo-600" />
             <p className={`text-2xl font-semibold text-gray-900 ${montserrat.className} text-center`}>Discover or Host Events</p>
             <ul className={`text-lg text-gray-500 text-left ${montserrat.className} list-disc list-inside`}>

@@ -133,8 +133,8 @@ const Header = () => {
       <header className="top-0 left-0 w-full bg-white shadow-md z-50 fixed">
         <nav className="flex items-center justify-between p-5">
           <div className="flex items-center">
-            {/* <span onClick={() => router.push('/')} className={`text-3xl font-bold text-indigo-600 ${montserrat.className} transition-all duration-300 scale-100 hover:scale-110`}>Sportwave</span> */}
-            <img src="/logo.png" alt="logo" width={200} height={200}  onClick={()=>router.push('/')} className='hover:cursor-pointer'/>
+            <span onClick={() => router.push('/')} className={`text-3xl font-bold text-indigo-600 ${montserrat.className} transition-all duration-300 scale-100 hover:scale-110`}>Sportwave</span>
+            {/* <img src="/logo.png" alt="logo" width={200} height={200}  onClick={()=>router.push('/')} className='hover:cursor-pointer'/> */}
           </div>
           <div className="hidden md:flex space-x-6">
             {navigation.map((item) => (

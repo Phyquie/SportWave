@@ -9,7 +9,7 @@ cloudinary.config({
 });
 
 export async function POST(request) {
-    const { name, description, location, sport, date, time, price, images, players, host, NoOfSeats, isActive,pin  } = await request.json();
+    const { name, description, location, sport, date, time, price, images, players, host, NoOfSeats, isActive,pin ,lat,lng  , detailedLocation } = await request.json();
     if (
         !name ||
         !description ||
@@ -22,7 +22,10 @@ export async function POST(request) {
         !host ||
         NoOfSeats === undefined ||
         typeof isActive !== 'boolean' ||
-        !pin
+        !pin ||
+        !lat ||
+        !lng ||
+        !detailedLocation
     ) {
         return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
@@ -34,7 +37,7 @@ export async function POST(request) {
             image_urls.push(result.secure_url);
         }
     }
-    const event = await Event.create({ name, description, location, sport, date, time, price, image_urls: image_urls, players, host, NoOfSeats, isActive,pin });
+    const event = await Event.create({ name, description, location, sport, date, time, price, image_urls: image_urls, players, host, NoOfSeats, isActive,pin,lat,lng,detailedLocation});
     if (!event) {
         return NextResponse.json({ error: "Failed to create event" }, { status: 404 });
     }

@@ -7,6 +7,9 @@ import Header from "./components/Header";
 import { Footer } from "./components/Footer";
 import { Toaster } from "react-hot-toast";
 
+import "leaflet/dist/leaflet.css";
+
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
