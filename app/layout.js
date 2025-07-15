@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import { Footer } from "./components/Footer";
 import { Toaster } from "react-hot-toast";
 
+
 import "leaflet/dist/leaflet.css";
 
 
@@ -23,10 +24,25 @@ const geistMono = Geist_Mono({
 
 // Create a QueryClient instance
 
-
 export const metadata = {
   title: "Sportwave",
   description: "Sportwave is a platform for sports enthusiasts to connect and share their passion for sports.",
+  openGraph: {
+    title: "Sportwave",
+    description: "Sportwave is a platform for sports enthusiasts to connect and share their passion for sports.",
+    url: "https://sport-wave-beta.vercel.app/",
+    siteName: "Sportwave",
+    images: [
+      {
+        url: "https://wallpaper-house.com/data/out/8/wallpaper2you_238141.jpg",
+        width: 800,
+        height: 600,
+        alt: "Sportwave Logo",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -41,7 +57,7 @@ export default function RootLayout({ children }) {
           {children}
           <Footer />
         </QueryProvider>
-        
+
       </body>
     </html>
   );
