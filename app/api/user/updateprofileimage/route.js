@@ -4,6 +4,9 @@ import User from "@/models/user.model";
 import connectDB from "@/utils/db";
 import { v2 as cloudinary } from 'cloudinary';
 
+export const runtime = 'nodejs'
+
+
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -19,7 +22,7 @@ export const POST = async (req) => {
         const token = tokenCookie.value;
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded.id);
-        if(!user){
+        if (!user) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
         const result = await cloudinary.uploader.upload(photo);

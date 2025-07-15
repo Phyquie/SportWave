@@ -7,7 +7,8 @@ const SearchTiles = () => {
 
 
   return (
-    <div>SearchTiles</div>
+    <div>
+    </div>
   )
 }
 

@@ -13,6 +13,7 @@ export const useCustomMutation = (url: string,) => {
                 body: JSON.stringify(data)
             })
         },
+
         onSuccess: (data: any) => {
             toast.success(data.message)
         },

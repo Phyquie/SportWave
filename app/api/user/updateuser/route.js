@@ -3,10 +3,13 @@ import { NextResponse } from "next/server";
 import User from "@/models/user.model";
 import connectDB from "@/utils/db";
 
+export const runtime = 'nodejs'
+
+
 
 
 export const POST = async (req) => {
-    
+
     try {
         await connectDB();
         const { name, email, phone, city, state, zip, country, photo_url, sports, age, gender, height, weight, bio } = await req.json();
@@ -15,11 +18,11 @@ export const POST = async (req) => {
         const token = tokenCookie.value;
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded.id);
-        
-        if(!user){
+
+        if (!user) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
-        
+
         user.name = name;
         user.email = email;
         user.phone = phone;

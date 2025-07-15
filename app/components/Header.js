@@ -1,15 +1,15 @@
 'use client'
 import { useStore } from '@/zustand/store'
 import { useRouter } from 'next/navigation'
-import {useMutation} from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import Login from './Login'
-import { useState , useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { TfiMenuAlt } from 'react-icons/tfi'
 import Cookies from 'js-cookie'
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
 import { useCustomQuery } from '@/custom_hooks/customQuery'
-import { Sigmar} from 'next/font/google'
+import { Sigmar } from 'next/font/google'
 import { Montserrat } from 'next/font/google'
 import logo from '@/public/logo.png'
 
@@ -17,7 +17,7 @@ const sigmar = Sigmar({ subsets: ['latin'], weight: ['400'] })
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['400'] })
 
 const Header = () => {
-  const { ShowLogin, setShowLogin , isLogIn , setIsLogIn  , user , setUser} = useStore()
+  const { ShowLogin, setShowLogin, isLogIn, setIsLogIn, user, setUser } = useStore()
 
   const { data: userdetails, isSuccess } = useCustomQuery(
     isLogIn ? '/api/user/viewuserbytoken' : '', // conditional URL
@@ -28,107 +28,107 @@ const Header = () => {
       setUser(userdetails);
     }
   }, [isSuccess, userdetails, setUser]);
-    
-    
-   
-    
-    const router = useRouter();
-    const LoginClick = () => {
-        setShowLogin(true);
-    }
 
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-    const navigation = [
-        { name: 'Services', href: '#services' },
-        { name: 'Merch', href: '#merch' },
-        { name: 'About', href: '#about' },
-        
-      ]
-     const [profilePopUp , setProfilePopUp] = useState(false)
-     const [userDropdownOpen, setUserDropdownOpen] = useState(false)
-    const {mutate: logout , isError , isLoading } = useMutation({
-        mutationFn: () => {
-             return fetch('/api/auth/logout',{
-                method: 'POST',
-                body: JSON.stringify({}),
-             });
-        },
-        onSuccess: () => {
-            console.log('Logout successful');
-            setIsLogIn(false);
-            setUser(null);
-            router.refresh();
-           
-          },
-          onError: (error) => {
-            console.log('Logout failed', error);
-          } 
-    })
-   
 
-  
-    const handleLogOut = () => {
-      localStorage.clear();
+
+
+  const router = useRouter();
+  const LoginClick = () => {
+    setShowLogin(true);
+  }
+
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const navigation = [
+    { name: 'Services', href: '#services' },
+    { name: 'Merch', href: '#merch' },
+    { name: 'About', href: '#about' },
+
+  ]
+  const [profilePopUp, setProfilePopUp] = useState(false)
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false)
+  const { mutate: logout, isError, isLoading } = useMutation({
+    mutationFn: () => {
+      return fetch('/api/auth/logout', {
+        method: 'POST',
+        body: JSON.stringify({}),
+      });
+    },
+    onSuccess: () => {
+      console.log('Logout successful');
       setIsLogIn(false);
       setUser(null);
-        logout();
-        
+      router.refresh();
+
+    },
+    onError: (error) => {
+      console.log('Logout failed', error);
+    }
+  })
+
+
+
+  const handleLogOut = () => {
+    localStorage.clear();
+    setIsLogIn(false);
+    setUser(null);
+    logout();
+
+    setUserDropdownOpen(false);
+  }
+  const handleMyProfile = () => {
+    setProfilePopUp(true);
+    setUserDropdownOpen(false);
+  }
+
+  const userMenuItems = [
+    { name: 'Profile Settings', href: '/services/myprofile', },
+    { name: 'Booked Events', href: '/myprofile/mybookedevents' },
+    { name: 'My Hosted Events', href: '/myprofile/myhostedevents' },
+    { name: 'Settings', href: '/services/myprofile' },
+    { name: 'My Stats', href: '/services/myprofile' },
+  ]
+
+  const handleUserMenuClick = () => {
+    setUserDropdownOpen(!userDropdownOpen);
+  }
+
+  const handleMenuItemClick = (href) => {
+    setUserDropdownOpen(false);
+    router.push(href);
+  }
+
+  // Check for token on client side to avoid hydration mismatch
+  useEffect(() => {
+    const userCookie = Cookies.get('token');
+    if (userCookie && !isLogIn) {
+      setIsLogIn(true);
+
+    }
+  }, [isLogIn, setIsLogIn]);
+
+
+
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleClickOutside = (event) => {
+      if (userDropdownOpen && !event.target.closest('.user-dropdown')) {
         setUserDropdownOpen(false);
-    }
-    const handleMyProfile = () => {
-        setProfilePopUp(true);
-        setUserDropdownOpen(false); 
-    }
+      }
+    };
 
-    const userMenuItems = [
-        { name: 'Profile Settings', href: '/services/myprofile', },
-        { name: 'Booked Events', href: '/services/myprofile' },
-        { name: 'My Hosted Events', href : '/services/myprofile' },
-        { name: 'Settings', href: '/services/myprofile' },
-        { name: 'My Stats', href: '/services/myprofile' },
-    ]
-
-    const handleUserMenuClick = () => {
-        setUserDropdownOpen(!userDropdownOpen);
-    }
-
-    const handleMenuItemClick = (href) => {
-        setUserDropdownOpen(false);
-        router.push(href);
-    }
-
-    // Check for token on client side to avoid hydration mismatch
-    useEffect(() => {
-        const userCookie = Cookies.get('token');
-        if (userCookie && !isLogIn) {
-            setIsLogIn(true);
-
-        }
-    }, [isLogIn, setIsLogIn]);
-    
-    
-
-   
-    // Close dropdown when clicking outside
-    useEffect(() => {
-        if (typeof window === 'undefined') return;
-        
-        const handleClickOutside = (event) => {
-            if (userDropdownOpen && !event.target.closest('.user-dropdown')) {
-                setUserDropdownOpen(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [userDropdownOpen]);
-  
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [userDropdownOpen]);
 
 
 
-    return (
+
+  return (
     <div className="bg-white max-w-screen flex flex-col items-center pt-24">
       <header className="top-0 left-0 w-full bg-white shadow-md z-50 fixed">
         <nav className="flex items-center justify-between p-5">
@@ -149,13 +149,13 @@ const Header = () => {
                 <button className={`text-gray-900 font-bold text-2xl hover:text-indigo-600 ${montserrat.className} hover:bg-slate-200 transition-all duration-300 scale-100 hover:scale-110 hover:rounded-lg p-2`}>
                   Hi,{user?.name.split(' ')[0] || 'User'}
                 </button>
-                <button 
-                  className="text-2xl ml-1 hover:text-indigo-600 transition-all duration-300" 
+                <button
+                  className="text-2xl ml-1 hover:text-indigo-600 transition-all duration-300"
                   onClick={handleUserMenuClick}
                 >
                   {userDropdownOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
                 </button>
-                
+
                 {/* Dropdown Menu */}
                 {userDropdownOpen && (
                   <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
@@ -179,7 +179,7 @@ const Header = () => {
                 )}
               </div>
             ) : (
-                <a href="#" className={`text-gray-900 font-bold text-2xl hover:text-indigo-600 ${montserrat.className} hover:bg-slate-200 transition-all duration-300 scale-100 hover:scale-110 hover:rounded-lg p-2`} onClick={LoginClick}>
+              <a href="#" className={`text-gray-900 font-bold text-2xl hover:text-indigo-600 ${montserrat.className} hover:bg-slate-200 transition-all duration-300 scale-100 hover:scale-110 hover:rounded-lg p-2`} onClick={LoginClick}>
                 Log in
               </a>
             )}
@@ -200,17 +200,17 @@ const Header = () => {
         )}
       </header>
       {ShowLogin && (
-  <div
-    className="w-full h-full top-0 left-0 fixed flex items-center justify-center z-50 bg-black bg-opacity-40 backdrop-blur-sm shadow-2xl"
-    onClick={() => setShowLogin(false)} // Close modal when clicking outside
-  >
-    <div onClick={(e) => e.stopPropagation()}> 
-      <Login showLogin={ShowLogin} setShowLogin={setShowLogin} />
-    </div>
-  </div>
-  )}
+        <div
+          className="w-full h-full top-0 left-0 fixed flex items-center justify-center z-50 bg-black bg-opacity-40 backdrop-blur-sm shadow-2xl"
+          onClick={() => setShowLogin(false)} // Close modal when clicking outside
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <Login showLogin={ShowLogin} setShowLogin={setShowLogin} />
+          </div>
+        </div>
+      )}
 
-  </div>
+    </div>
   )
 }
 

@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import Event from '@/models/event.model';
 import connectDB from '@/utils/db';
 
+export const runtime = 'nodejs'
+
+
 export async function GET(request) {
 
 
@@ -30,18 +33,19 @@ export async function GET(request) {
     const search = searchParams.get('search');
     const lat = searchParams.get('lat');
     const lng = searchParams.get('lng');
+    const radius = searchParams.get('radius') || 50; // Default radius is 50 km
     try {
         await connectDB();
         let events = await Event.find({
 
         });
-        if(!lat || !lng) {
+        if (!lat || !lng) {
             return NextResponse.json({ error: 'Latitude and Longitude are required for location-based search' }, { status: 400 });
         }
         if (lat && lng) {
             events = events.filter(event => {
                 const distance = getDistanceInKm(lat, lng, event.lat, event.lng);
-                return distance <= 50; // Filter events within 50 km
+                return distance <= radius // Filter events within 50 km
             });
         }
         if (search) {

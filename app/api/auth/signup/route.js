@@ -5,6 +5,9 @@ import { NextResponse } from "next/server";
 import TempUser from "@/models/temp.user.model";
 import nodemailer from "nodemailer";
 
+export const runtime = 'nodejs'
+
+
 const generateOtp = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
@@ -14,9 +17,9 @@ const sendOTPEmail = async (email, otp) => {
         const transporter = nodemailer.createTransport({
             host: 'smtp-relay.brevo.com',
             port: 587,
-            secure: false, 
+            secure: false,
             auth: {
-                user: '79ac62002@smtp-brevo.com', 
+                user: '79ac62002@smtp-brevo.com',
                 pass: process.env.BREVEO_PASS
             }
         });
@@ -67,28 +70,28 @@ export const POST = async (req) => {
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        
+
         const user = await User.findOne({ email });
-        if(user) {
+        if (user) {
             return NextResponse.json({ message: "User already exists" }, { status: 401 });
         }
 
         await TempUser.deleteMany({ email });
         const otp = generateOtp();
-        
+
         await sendOTPEmail(email, otp);
 
-        try{
+        try {
             const newUser = new TempUser({ email, password: hashedPassword, name, otp });
             await newUser.save();
-        }catch(error){
+        } catch (error) {
             console.error('Error creating temporary user:', error);
             return NextResponse.json(
                 { message: "An error occurred during signup in temporary database" },
                 { status: 500 }
             );
         }
-        
+
         return NextResponse.json({ message: "Temporary User created successfully" }, { status: 200 });
     } catch (error) {
         console.error('Signup error:', error);

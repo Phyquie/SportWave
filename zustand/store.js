@@ -31,6 +31,8 @@ export const useStore = create(
       lat:'',
       setLng:(value)=> set({lng:value}),
       lng:'',
+      setSearchvalue: (value) => set({ searchValue: value }),
+      searchValue: '',
     }),
     {
       name: 'sportwave-store',
