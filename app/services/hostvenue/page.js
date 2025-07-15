@@ -2,11 +2,15 @@
 import React, { useState, useEffect } from 'react'
 import { useCustomMutation } from '@/custom_hooks/customMutation'
 import { Montserrat } from 'next/font/google'
-import toast from 'react-hot-toast'
 import { useStore } from '@/zustand/store'
+import dynamic from 'next/dynamic'
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['400'] })
-import LocationPicker from '@/app/components/LocationPicker'
-import { latLng } from 'leaflet'
+
+// Dynamically import LocationPicker to avoid SSR issues
+const LocationPicker = dynamic(() => import('@/app/components/LocationPicker'), {
+  ssr: false,
+  loading: () => <div className="w-full h-[500px] mt-5 bg-gray-100 rounded-lg flex items-center justify-center">Loading map...</div>
+})
 
 const CreateEventPage = () => {
     const { user, location, pinCode, lat, lng } = useStore();

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { useStore } from "@/zustand/store";
 export default function LocationPicker() {
   const [position, setPosition] = useState(null);
   const [address, setAddress] = useState(null);
-  const {location,  pinCode, setLocation, setPinCode,  setLat , setLng} = useStore();
+  const { location, pinCode, setLocation, setPinCode, setLat, setLng } = useStore();
   useEffect(() => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition((pos) => {
