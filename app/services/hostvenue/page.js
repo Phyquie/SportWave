@@ -8,13 +8,12 @@ const montserrat = Montserrat({ subsets: ['latin'], weight: ['400'] })
 
 // Dynamically import LocationPicker to avoid SSR issues
 const LocationPicker = dynamic(() => import('@/app/components/LocationPicker'), {
-  ssr: false,
-  loading: () => <div className="w-full h-[500px] mt-5 bg-gray-100 rounded-lg flex items-center justify-center">Loading map...</div>
+    ssr: false,
+    loading: () => <div className="w-full h-[500px] mt-5 bg-gray-100 rounded-lg flex items-center justify-center">Loading map...</div>
 })
 
 const CreateEventPage = () => {
     const { user, location, pinCode, lat, lng } = useStore();
-    console.log(location, pinCode)
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -43,7 +42,14 @@ const CreateEventPage = () => {
         }))
     }, [location, pinCode])
 
-    const { mutate: createEvent, isPending } = useCustomMutation('/api/event/createevent')
+    const { mutate: createEvent, isPending } = useCustomMutation('/api/event/createevent', {
+        onSuccess: (data) => {
+            // Optionally, reset form or redirect
+        },
+        onError: (error) => {
+            console.error('Error creating event:', error);
+        },
+    })
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -79,7 +85,6 @@ const CreateEventPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log('Form submitted with data:', formData)
 
         // Prepare the data for the API
         const eventData = {

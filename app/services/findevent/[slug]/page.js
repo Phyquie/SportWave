@@ -4,17 +4,27 @@ import { use } from 'react'
 import { useCustomQuery } from '@/custom_hooks/customQuery';
 import CustomImageSlider from '@/app/components/CustomImageSlider';
 import { useCustomMutation } from '@/custom_hooks/customMutation';
+import toast from 'react-hot-toast';
 
 const EventDetails = ({ params }) => {
   const slug = use(params).slug;
 
-  const { data: eventData, isLoading, isError, error } = useCustomQuery(`/api/utils/geteventbyeventid?eventId=${slug}`)
-  console.log('Event Data:', eventData);
+  const { data: eventData } = useCustomQuery(`/api/utils/geteventbyeventid?eventId=${slug}`)
+  // console.log('Event Data:', eventData);
 
-  const { mutate: bookEvent, isLoading: isBooking } = useCustomMutation('/api/utils/bookevents')
+  const { mutate: bookEvent } = useCustomMutation('/api/utils/bookevents', {
+    onSuccess: () => {
+      toast.success('Event booked successfully!');
+    },
+    onError: (error) => {
+      toast.error(`Error booking event: ${error.message}`);
+    },
+  });
 
   const handleBooking = () => {
     bookEvent({ eventUrl: slug })
+
+
   }
 
 
@@ -110,7 +120,7 @@ const EventDetails = ({ params }) => {
           </div>
         </div>
         <div className='mt-8 flex justify-center'>
-          <button className='bg-indigo-600 py-2 px-4 flex-grow rounded-xl text-white' onClick={handleBooking}>{isBooking ? "Booking..." : "Book Now"}</button>
+          <button className='bg-indigo-600 py-2 px-4 flex-grow rounded-xl text-white' onClick={handleBooking}> Book Now</button>
         </div>
       </div>
       <div className='w-3/4 mx-auto bg-white rounded-lg shadow-md p-8'>

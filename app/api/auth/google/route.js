@@ -11,10 +11,8 @@ export const runtime = 'nodejs'
 
 
 export const POST = async (req) => {
-    console.log("Running");
     try {
         const { token_google, name, email, photo_url } = await req.json();
-        console.log(token_google, name, email, photo_url)
         if (!token_google) {
             return NextResponse.json({ message: "Token not found" }, { status: 400 });
         }
@@ -28,18 +26,16 @@ export const POST = async (req) => {
         });
         await connectDB();
         const user = await User.findOne({ email });
-        console.log(user)
 
         if (!user) {
             try {
                 const newUser = new User({ google_id: token_google, name, email, photo_url, password: "" });
                 await newUser.save();
-                console.log("New user created", newUser);
                 generateToken(newUser);
                 return NextResponse.json({ message: "Login successful via Google" }, { status: 200 });
             }
             catch (error) {
-                console.log(error);
+                return NextResponse.json({ message: "Error creating new user" }, { status: 500 });
             }
 
         }

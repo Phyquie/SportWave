@@ -20,7 +20,7 @@ const page = () => {
     if (isError) {
         return <div>Error: {error.message}</div>
     }
-    console.log('Hosted Events:', hostedEvents?.events_hosted);
+    // console.log('Hosted Events:', hostedEvents?.events_hosted);
     return (
         <div>
 

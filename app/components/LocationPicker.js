@@ -27,12 +27,12 @@ export default function LocationPicker() {
     );
     const data = await res.json();
     setAddress(data);
-    console.log(data);
+    // console.log(data);
     const Location = `${data.address.county}, ${data.address.country}`;
     const PinCode = data.address.postcode;
     const lat1 = data.boundingbox[0];
     const lng1 = data.boundingbox[2];
-    console.log(Location, PinCode);
+    // console.log(Location, PinCode);
     setLocation(Location);
     setPinCode(PinCode);
     setLat(lat1);

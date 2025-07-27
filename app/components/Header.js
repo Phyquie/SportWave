@@ -11,7 +11,6 @@ import { IoIosArrowUp } from "react-icons/io";
 import { useCustomQuery } from '@/custom_hooks/customQuery'
 import { Sigmar } from 'next/font/google'
 import { Montserrat } from 'next/font/google'
-import logo from '@/public/logo.png'
 
 const sigmar = Sigmar({ subsets: ['latin'], weight: ['400'] })
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['400'] })
@@ -54,14 +53,15 @@ const Header = () => {
       });
     },
     onSuccess: () => {
-      console.log('Logout successful');
+      // console.log('Logout successful');
       setIsLogIn(false);
       setUser(null);
       router.refresh();
 
     },
     onError: (error) => {
-      console.log('Logout failed', error);
+      // console.log('Logout failed', error);
+      alert('Logout failed. Please try again.');
     }
   })
 

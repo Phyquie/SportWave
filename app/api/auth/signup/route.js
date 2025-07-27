@@ -59,7 +59,6 @@ export const POST = async (req) => {
     try {
         await connectDB();
         const { email, password, name } = await req.json();
-        console.log(email, password, name);
         // Add validation for required fields
         if (!email || !password || !name) {
             return NextResponse.json(

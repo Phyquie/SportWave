@@ -5,7 +5,6 @@ import AutoLocationButton from '@/app/components/Geolocation';
 import { useStore } from '@/zustand/store';
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from 'next/navigation';
-import { set } from 'mongoose';
 
 
 
@@ -55,41 +54,47 @@ const page = () => {
       <div className="pt-32 px-4">
         {searchResults?.events && searchResults.events.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {searchResults.events.map((event) => (
-              <div
-                key={event._id}
-                className="bg-white p-5 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer group"
-                onClick={() => router.push(`/services/findevent/${event._id}`)}
-              >
-                {/* Event Image */}
-                <img
-                  src={event.image_urls[0]}
-                  alt={event.name}
-                  className="w-full h-52 object-cover rounded-xl mb-4 group-hover:scale-[1.02] transition-transform duration-300"
-                />
+            {searchResults.events
+              .filter(event => event._id)
+              .map((event) => (
+                <div
+                  key={event._id}
+                  className="bg-white p-5 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer group"
+                  onClick={() => {
+                    if (event?._id) {
+                      router.push(`/services/findevent/${event._id}`);
+                    }
+                  }}
+                >
+                  {/* Event Image */}
+                  <img
+                    src={event.image_urls[0]}
+                    alt={event.name}
+                    className="w-full h-52 object-cover rounded-xl mb-4 group-hover:scale-[1.02] transition-transform duration-300"
+                  />
 
-                {/* Title */}
-                <h2 className="text-xl font-bold text-gray-800 mb-1 truncate">{event.name}</h2>
+                  {/* Title */}
+                  <h2 className="text-xl font-bold text-gray-800 mb-1 truncate">{event.name}</h2>
 
-                {/* Location */}
-                <p className="text-sm text-gray-600 mb-1">
-                  📍 <span className="font-medium">{event.detailedLocation || event.location}</span>
-                </p>
-
-                {/* Sport */}
-                <p className="text-sm text-gray-600 mb-1">
-                  🏅 <span className="font-medium">Sport:</span> {event.sport}
-                </p>
-
-                {/* Seats */}
-                {event?.NoOfSeats && (
-                  <p className="text-sm text-gray-600">
-                    🎟️ <span className="font-medium">Seats:</span> {event.NoOfSeats}
+                  {/* Location */}
+                  <p className="text-sm text-gray-600 mb-1">
+                    📍 <span className="font-medium">{event.detailedLocation || event.location}</span>
                   </p>
-                )}
-              </div>
 
-            ))}
+                  {/* Sport */}
+                  <p className="text-sm text-gray-600 mb-1">
+                    🏅 <span className="font-medium">Sport:</span> {event.sport}
+                  </p>
+
+                  {/* Seats */}
+                  {event?.NoOfSeats && (
+                    <p className="text-sm text-gray-600">
+                      🎟️ <span className="font-medium">Seats:</span> {event.NoOfSeats}
+                    </p>
+                  )}
+                </div>
+
+              ))}
           </div>
         ) : (
           <div className="flex items-center justify-center h-[calc(100vh-10rem)]">
