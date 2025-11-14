@@ -29,7 +29,8 @@ export const POST = async (req) => {
         })
         await Event.findOneAndUpdate(
             { _id: eventUrl },
-            { $addToSet: { players: user._id } }
+            { $addToSet: { players: user._id } },
+            { NoOfSeats: event.NoOfSeats - 1 }
         );
         return NextResponse.json({ message: "Event booked successfully", user: user, event: event });
     }

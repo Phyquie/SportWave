@@ -67,7 +67,7 @@ const page = () => {
             [name]: value
         }))
     }
-    const updateImageMutation = useCustomMutation('/api/user/updateprofileimage')
+    const updateImageMutation = useCustomMutation('/api/user/updateprofileimage', {})
 
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];

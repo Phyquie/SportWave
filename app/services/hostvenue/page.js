@@ -4,12 +4,14 @@ import { useCustomMutation } from '@/custom_hooks/customMutation'
 import { Montserrat } from 'next/font/google'
 import { useStore } from '@/zustand/store'
 import dynamic from 'next/dynamic'
-const montserrat = Montserrat({ subsets: ['latin'], weight: ['400'] })
+import { motion } from 'framer-motion'
+
+const montserrat = Montserrat({ subsets: ['latin'], weight: ['400', '600', '700'] })
 
 // Dynamically import LocationPicker to avoid SSR issues
 const LocationPicker = dynamic(() => import('@/app/components/LocationPicker'), {
     ssr: false,
-    loading: () => <div className="w-full h-[500px] mt-5 bg-gray-100 rounded-lg flex items-center justify-center">Loading map...</div>
+    loading: () => <div className="w-full h-[500px] mt-5 bg-gray-100 rounded-2xl flex items-center justify-center animate-pulse">Loading map...</div>
 })
 
 const CreateEventPage = () => {
@@ -27,7 +29,8 @@ const CreateEventPage = () => {
         pin: '',
         detailedLocation: '',
         lat: '',
-        lng: ''
+        lng: '',
+        isActive: true
 
     })
 
@@ -52,11 +55,12 @@ const CreateEventPage = () => {
     })
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target
+        const { name, value, type, checked } = e.target
         setFormData(prev => ({
             ...prev,
-            [name]: value
+            [name]: type === 'checkbox' ? checked : value
         }))
+        console.log('Form Data:', formData)
     }
 
     const handleImageChange = (e) => {
@@ -125,43 +129,50 @@ const CreateEventPage = () => {
     }
 
     return (
-        <div className={`min-h-screen bg-gray-200 py-8 ${montserrat.className}`}>
-            <div className='max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8'>
-                <h1 className='text-3xl font-bold text-center mb-8 text-gray-800'>Create New Event</h1>
+        <div className={`min-h-screen bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 py-10 ${montserrat.className}`}>
+            <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="max-w-3xl mx-auto bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-10 border border-gray-200"
+            >
+                <h1 className="text-4xl font-bold text-center mb-10 text-gray-800 bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent">
+                    🏟️ Create New Event
+                </h1>
 
-                <form onSubmit={handleSubmit} className='space-y-6'>
+                <form onSubmit={handleSubmit} className="space-y-8">
                     {/* Event Images */}
-                    <div className='space-y-2'>
-                        <label className='block text-sm font-medium text-gray-700'>Event Images</label>
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Event Images</label>
                         <input
                             type="file"
                             accept="image/*"
                             multiple
                             onChange={handleImageChange}
-                            className='w-full border-2 border-gray-300 p-3 rounded-md cursor-pointer hover:border-blue-500 transition-colors'
+                            className="w-full border border-gray-300 p-3 rounded-xl cursor-pointer hover:border-indigo-500 transition"
                         />
-                        <p className='text-sm text-gray-500'>You can select multiple images</p>
+                        <p className="text-sm text-gray-500 mt-1">You can select multiple images</p>
 
                         {/* Display selected images */}
                         {formData.images.length > 0 && (
-                            <div className='mt-4'>
-                                <h3 className='text-sm font-medium text-gray-700 mb-2'>Selected Images ({formData.images.length})</h3>
-                                <div className='grid grid-cols-2 md:grid-cols-3 gap-2'>
+                            <div className="mt-4">
+                                <h3 className="text-sm font-semibold text-gray-700 mb-2">Selected Images ({formData.images.length})</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                                     {formData.images.map((image, index) => (
-                                        <div key={index} className='relative group'>
-                                            <img
-                                                src={image}
-                                                alt={`Event image ${index + 1}`}
-                                                className='w-full h-24 object-cover rounded-md border-2 border-gray-200'
-                                            />
+                                        <motion.div
+                                            key={index}
+                                            className="relative group rounded-xl overflow-hidden shadow-md"
+                                            whileHover={{ scale: 1.05 }}
+                                        >
+                                            <img src={image} alt={`Event image ${index + 1}`} className="w-full h-28 object-cover" />
                                             <button
-                                                type='button'
+                                                type="button"
                                                 onClick={() => removeImage(index)}
-                                                className='absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100'
+                                                className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center hover:bg-red-600"
                                             >
                                                 ×
                                             </button>
-                                        </div>
+                                        </motion.div>
                                     ))}
                                 </div>
                             </div>
@@ -169,48 +180,56 @@ const CreateEventPage = () => {
                     </div>
 
                     {/* Event Name */}
-                    <div className='space-y-2'>
-                        <label className='block text-sm font-medium text-gray-700'>Event Name *</label>
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Event Name *</label>
                         <input
                             type="text"
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
-                            placeholder='Enter event name'
+                            placeholder="Enter event name"
                             required
-                            className='w-full border-2 border-gray-300 p-3 rounded-md focus:border-blue-500 focus:outline-none'
+                            className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                         />
                     </div>
-                    <div className='space-y-2'>
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer" name='isActive' onChange={handleInputChange} />
-                            <div class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
-                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Is Active</span>
+
+                    {/* Is Active Toggle */}
+                    <div>
+                        <label className="inline-flex items-center cursor-pointer">
+                            <input 
+                                type="checkbox" 
+                                className="sr-only peer" 
+                                name="isActive" 
+                                checked={formData.isActive}
+                                onChange={handleInputChange}
+                            />
+                            <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-300 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                            <span className="ms-3 text-sm font-semibold text-gray-700">Is Active</span>
                         </label>
                     </div>
 
                     {/* Description */}
-                    <div className='space-y-2'>
-                        <label className='block text-sm font-medium text-gray-700'>Description *</label>
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Description *</label>
                         <textarea
                             name="description"
                             value={formData.description}
                             onChange={handleInputChange}
-                            placeholder='Describe your event'
+                            placeholder="Describe your event"
                             required
                             rows={4}
-                            className='w-full border-2 border-gray-300 p-3 rounded-md focus:border-blue-500 focus:outline-none resize-none'
+                            className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                         />
                     </div>
 
                     {/* Sport */}
-                    <div className='space-y-2'>
-                        <label className='block text-sm font-medium text-gray-700'>Sport *</label>
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Sport *</label>
                         <select
                             name="sport"
                             value={formData.sport}
                             onChange={handleInputChange}
-                            className={`border-2 ${montserrat.className} w-full border-gray-300 p-2 rounded-md`}
+                            className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                         >
                             <option value="">Select a sport</option>
                             <option value="cricket">Cricket</option>
@@ -243,7 +262,6 @@ const CreateEventPage = () => {
                             <option value="weightlifting">Weightlifting</option>
                             <option value="handball">Handball</option>
                             <option value="softball">Softball</option>
-                            <option value="cricket">Cricket</option>
                             <option value="field-hockey">Field Hockey</option>
                             <option value="polo">Polo</option>
                             <option value="darts">Darts</option>
@@ -257,120 +275,92 @@ const CreateEventPage = () => {
                             <option value="climbing">Climbing</option>
                             <option value="paragliding">Paragliding</option>
                             <option value="diving">Diving</option>
-
-
                         </select>
                     </div>
 
-                    {/* Location */}
-                    <div className='space-y-2'>
-                        <label className='block text-sm font-medium text-gray-700'>Location *</label>
-                        <input
-                            type="text"
-                            name="location"
-                            value={formData.location}
-                            onChange={handleInputChange}
-                            placeholder='Event venue or location'
-                            required
-                            className='w-full border-2 border-gray-300 p-3 rounded-md focus:border-blue-500 focus:outline-none'
-                        />
-                        <LocationPicker />
-
-                    </div>
-
-                    <div className='space-y-2'>
-                        <label className='block text-sm font-medium text-gray-700'>Detailed Location(i.e Nearby landmark)</label>
-                        <input
-                            type="text"
-                            name="detailedLocation"
-                            value={formData.detailedLocation}
-                            onChange={handleInputChange}
-                            placeholder='Enter detailed location'
-                            required
-                            className='w-full border-2 border-gray-300 p-3 rounded-md focus:border-blue-500 focus:outline-none'
-                        />
-                    </div>
-
-                    <div className='space-y-2'>
-                        <label className='block text-sm font-medium text-gray-700'>Pin Code *</label>
-                        <input
-                            type="text"
-                            name="pin"
-                            value={formData.pin}
-                            onChange={handleInputChange}
-                            placeholder='Enter Pin Code'
-                            required
-                            className='w-full border-2 border-gray-300 p-3 rounded-md focus:border-blue-500 focus:outline-none'
-                        />
-                    </div>
-
-
-                    {/* Date     and Time */}
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                        <div className='space-y-2'>
-                            <label className='block text-sm font-medium text-gray-700'>Date *</label>
+                    {/* Location Inputs */}
+                    {[
+                        { name: "location", label: "Location *", placeholder: "Event venue or location" },
+                        { name: "detailedLocation", label: "Detailed Location", placeholder: "Nearby landmark" },
+                        { name: "pin", label: "Pin Code *", placeholder: "Enter Pin Code" }
+                    ].map((field, idx) => (
+                        <div key={idx}>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">{field.label}</label>
                             <input
-                                type="date"
-                                name="date"
-                                value={formData.date}
+                                type="text"
+                                name={field.name}
+                                value={formData[field.name]}
                                 onChange={handleInputChange}
-                                required
-                                className='w-full border-2 border-gray-300 p-3 rounded-md focus:border-blue-500 focus:outline-none'
+                                placeholder={field.placeholder}
+                                required={field.name === 'location' || field.name === 'pin'}
+                                className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                             />
                         </div>
-                        <div className='space-y-2'>
-                            <label className='block text-sm font-medium text-gray-700'>Time *</label>
-                            <input
-                                type="time"
-                                name="time"
-                                value={formData.time}
-                                onChange={handleInputChange}
-                                required
-                                className='w-full border-2 border-gray-300 p-3 rounded-md focus:border-blue-500 focus:outline-none'
-                            />
-                        </div>
+                    ))}
+
+                    <LocationPicker />
+
+                    {/* Date + Time */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {[
+                            { name: "date", label: "Date *", type: "date" },
+                            { name: "time", label: "Time *", type: "time" }
+                        ].map((f, i) => (
+                            <div key={i}>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">{f.label}</label>
+                                <input
+                                    type={f.type}
+                                    name={f.name}
+                                    value={formData[f.name]}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                />
+                            </div>
+                        ))}
                     </div>
 
-                    {/* Price and Number of Seats */}
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                        <div className='space-y-2'>
-                            <label className='block text-sm font-medium text-gray-700'>Price (Optional)</label>
+                    {/* Price + Seats */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">Price (Optional)</label>
                             <input
                                 type="number"
                                 name="price"
                                 value={formData.price}
                                 onChange={handleInputChange}
-                                placeholder='0.00'
+                                placeholder="0.00"
                                 min="0"
                                 step="0.01"
-                                className='w-full border-2 border-gray-300 p-3 rounded-md focus:border-blue-500 focus:outline-none'
+                                className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                             />
                         </div>
-                        <div className='space-y-2'>
-                            <label className='block text-sm font-medium text-gray-700'>Number of Seats *</label>
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">Number of Seats *</label>
                             <input
                                 type="number"
                                 name="NoOfSeats"
                                 value={formData.NoOfSeats}
                                 onChange={handleInputChange}
-                                placeholder='Maximum participants'
-                                required
+                                placeholder="Max participants"
                                 min="1"
-                                className='w-full border-2 border-gray-300 p-3 rounded-md focus:border-blue-500 focus:outline-none'
+                                required
+                                className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                             />
                         </div>
                     </div>
 
-                    {/* Submit Button */}
-                    <button
-                        type='submit'
+                    {/* Submit */}
+                    <motion.button
+                        type="submit"
+                        whileTap={{ scale: 0.95 }}
                         disabled={isPending}
-                        className='w-full bg-blue-500 text-white p-3 rounded-md cursor-pointer hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium text-lg'
+                        className="w-full py-4 text-lg font-semibold rounded-xl bg-gradient-to-r from-indigo-500 to-blue-500 text-white hover:opacity-90 disabled:opacity-60 transition"
                     >
-                        {isPending ? 'Creating Event...' : 'Create Event'}
-                    </button>
+                        {isPending ? "Creating Event..." : "🏟️ Create Event"}
+                    </motion.button>
                 </form>
-            </div>
+            </motion.div>
         </div>
     )
 }

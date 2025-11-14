@@ -16,8 +16,20 @@ const eventSchema = new mongoose.Schema({
     isActive: { type: Boolean, required: true, default: true },
     lat: { type: Number, required: false },
     lng: { type: Number, required: false },
-    time: { type: Number, required: false },
+    time: { type: String, required: false },
+      expireAt: {
+        type: Date,
+        default: function () {
+            // expire 24h after the event date
+            return new Date(this.date.getTime() + 24 * 60 * 60 * 1000);
+        },
+        index: { expires: 0 } // TTL index (expireAt itself decides when)
+    } 
+
+
+    
 });
+
 
 const Event = mongoose.models.Event || mongoose.model("Event", eventSchema);
 

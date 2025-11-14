@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Montserrat } from 'next/font/google'
 import basketball from '../../public/photos/pexels-king-siberia-1123639-2277981.jpg'
 import tennis from '../../public/photos/pexels-cottonbro-5741289.jpg'
@@ -13,150 +13,151 @@ import Image from 'next/image'
 import { FaMagnifyingGlassLocation } from "react-icons/fa6";
 import { RiTeamLine } from "react-icons/ri";
 import { FaBaseballBall } from "react-icons/fa";
-
-
-
-import Login from '../components/Login';
 import { useStore } from '@/zustand/store';
 import Link from 'next/link';
-import Cookies from 'js-cookie';
-import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import HeroImageSlider from '../components/HeroImageSlider';
 
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['400'] })
 
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { ShowLogin, setShowLogin } = useStore();
-  const { ShowSignup, setShowSignup } = useStore();
-  const { ShowOtp, setShowOtp } = useStore();
+  const { ShowLogin, setShowLogin, ShowSignup, setShowSignup, ShowOtp, setShowOtp } = useStore();
   const router = useRouter();
 
-
-
-
   return (
-    <div className='bg-white'>
-      <div className="px-10 pt-24 flex flex-col items-center" id="home">
-        <h1 className={`text-5xl font-semibold text-gray-900 ${montserrat.className} text-center`}>Find Players, Teams, and Events<br /> At Sportwave</h1>
-        <p className={`mt-6 text-lg text-gray-500 ${montserrat.className}`}>Sportwave is a platform that allows you to find players, teams, and events at your fingertips.</p>
-        <div className="mt-6 flex justify-center space-x-4">
-          <a href="#" className={`bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-500 ${montserrat.className}`}>Get started</a>
-
-        </div>
-        <div className="mt-6 flex justify-center space-x-4">
-          <Image src={basketball} alt="Basketball" className="w-[40vh] h-[60vh] rounded-3xl border-2 border-gray-500 hover:border-indigo-600 transition-all duration-300 scale-100 hover:scale-105 p-2" />
-          <Image src={tennis} alt="Tennis" className="w-[40vh] h-[60vh] rounded-3xl border-2 border-gray-500 hover:border-indigo-600 transition-all duration-300 scale-100 hover:scale-105 p-2" />
-          <Image src={football} alt="Football" className="w-[40vh] h-[60vh] rounded-3xl border-2 border-gray-500 hover:border-indigo-600 transition-all duration-300 scale-100 hover:scale-105 p-2" />
-        </div>
-      </div>
-      {/* Line */}
-      <div className="w-3/4 h-1 bg-gray-400 mt-10 mx-auto "></div>
-
-      <h1 className={`text-5xl mt-10 font-semibold text-gray-900 ${montserrat.className} text-center mb-10 `}>What can you do on Sportwave</h1>
-      <div className="flex flex-row items-center justify-between space-x-6 w-3/4 mx-auto">
-        <div className="flex flex-col  w-80    items-center justify-center">
-          <FaMagnifyingGlassLocation className="text-6xl text-indigo-600" />
-          <p className={`text-2xl font-semibold text-gray-900 ${montserrat.className} text-center`}>Find Player Near You</p>
-          <ul className={`text-lg text-gray-500 text-left ${montserrat.className} list-disc list-inside`}>
-            <li>Filter by sport, skill level, location and more</li>
-            <li>See profile ,post game ratings and more</li>
-            <li>Connect with players and find your next game</li>
-          </ul>
-        </div>
-        <div className="flex flex-col w-80  items-center justify-center">
-          <RiTeamLine className="text-6xl text-indigo-600" />
-          <p className={`text-2xl font-semibold text-gray-900 ${montserrat.className} text-center`}> Join or Create a Team</p>
-          <ul className={`text-lg text-gray-500 text-left ${montserrat.className} list-disc list-inside`}>
-            <li>Create a team or join an existing team</li>
-            <li>Manage upcoming games and tournaments</li>
-            <li>Manage team roster and player availability</li>
-          </ul>
-        </div>
-        <div className="flex flex-col w-80  items-center justify-center">
-          <FaBaseballBall className="text-6xl text-indigo-600" />
-          <p className={`text-2xl font-semibold text-gray-900 ${montserrat.className} text-center`}>Discover or Host Events</p>
-          <ul className={`text-lg text-gray-500 text-left ${montserrat.className} list-disc list-inside`}>
-            <li>Find events near you or host your own</li>
-            <li>Tournaments, leagues, and more</li>
-            <li>Revive and track your performance</li>
-          </ul>
+    <div className="bg-white">
+      {/* HERO */}
+      <section className="px-4 md:px-10 pt-24 flex flex-col md:flex-row md:items-start items-center max-w-7xl mx-auto" id="home">
+        {/* Left side: Text content */}
+        <div className="md:w-1/2 text-left md:pr-12 md:pt-16">
+          <h1 className={`text-4xl md:text-6xl font-bold text-gray-900 leading-tight ${montserrat.className}`}>
+            Find Players, Teams, and Events <br className="hidden md:block" /> At Sportwave
+          </h1>
+          <p className={`mt-6 text-base md:text-lg text-gray-600 ${montserrat.className}`}>
+            Sportwave is the platform that brings the sports community together. Connect with players, build teams, and discover exciting events near you.
+          </p>
+          <div className="mt-8">
+            <a href="#" className={`bg-indigo-600 text-white px-6 py-3 rounded-full shadow-md hover:bg-indigo-500 transition ${montserrat.className}`}>
+              Get Started
+            </a>
+          </div>
         </div>
 
-      </div>
+        {/* Right side: Image slider */}
+        <div className="md:w-1/2 mt-12 md:mt-0">
+          {/* Mobile view */}
+          <div className="md:hidden w-full h-72 overflow-hidden rounded-3xl">
+            <Image
+              src={basketball}
+              alt="Sport"
+              className="w-full h-full object-cover"
+              priority
+            />
+          </div>
+          
+          {/* Desktop view with image slider */}
+          <div className="hidden md:block w-full h-[70vh]">
+            <HeroImageSlider images={[basketball, tennis, football]} />
+          </div>
+        </div>
+      </section>
 
-      <div className="w-3/4 h-1 bg-gray-400 mt-10 mx-auto "></div>
+      {/* Divider */}
+      <div className="w-11/12 max-w-4xl h-[2px] bg-gray-200 mt-16 mx-auto"></div>
 
-
-      <div className="px-10 pt-20 flex flex-col" id="services">
-        <h1 className={`text-5xl font-semibold text-gray-900 ${montserrat.className} text-center mb-10 `}>Our Services</h1>
-        <div className="mt-6 flex flex-col items-center space-y-6">
+      {/* FEATURES */}
+      <section className="px-4 md:px-10 pt-20" id="features">
+        <h1 className={`text-3xl md:text-5xl font-bold text-gray-900 ${montserrat.className} text-center mb-12`}>
+          What You Can Do
+        </h1>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {[
-            { src: services1, alt: "Services 1", text: "Host an Event", href: "/services/hostvenue" },
-            { src: services2, alt: "Services 2", text: "Find a Event", href: "/services/findevent" },
-            { src: services3, alt: "Services 3", text: "Find a Player", href: "/services/findplayer" },
+            {
+              icon: <FaMagnifyingGlassLocation className="text-5xl text-indigo-600" />,
+              title: "Find Players",
+              points: ["Filter by sport, skill level & location", "View profiles & ratings", "Connect for your next game"],
+            },
+            {
+              icon: <RiTeamLine className="text-5xl text-indigo-600" />,
+              title: "Join or Create Teams",
+              points: ["Build or join a team", "Manage tournaments & matches", "Track roster & availability"],
+            },
+            {
+              icon: <FaBaseballBall className="text-5xl text-indigo-600" />,
+              title: "Discover Events",
+              points: ["Explore local events & tournaments", "Host your own leagues", "Track your performance"],
+            },
+          ].map((item, idx) => (
+            <div key={idx} className="p-6 border rounded-2xl shadow hover:shadow-lg transition flex flex-col items-center text-center">
+              {item.icon}
+              <h3 className={`text-xl font-semibold mt-4 ${montserrat.className}`}>{item.title}</h3>
+              <ul className={`mt-3 text-gray-600 text-sm md:text-base space-y-2 text-left ${montserrat.className}`}>
+                {item.points.map((point, i) => (
+                  <li key={i}>• {point}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="w-11/12 max-w-4xl h-[2px] bg-gray-200 mt-16 mx-auto"></div>
+
+      {/* SERVICES */}
+      <section className="px-4 md:px-10 pt-20" id="services">
+        <h1 className={`text-3xl md:text-5xl font-bold text-gray-900 ${montserrat.className} text-center mb-12`}>
+          Our Services
+        </h1>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {[
+            { src: services1, alt: "Host Event", text: "Host an Event", href: "/services/hostvenue" },
+            { src: services2, alt: "Find Event", text: "Find an Event", href: "/services/findevent" },
+            { src: services3, alt: "Find Player", text: "Find a Player", href: "/services/findplayer" },
           ].map((service, index) => (
-            <Link href={service.href} key={index} className="relative group rounded-3xl">
-              {/* Image */}
-              <div className="relative w-full h-72 group ">
-                <Image src={service.src} alt={service.alt}
-                  className="max-w-full h-72 object-cover  p-1 rounded-3xl border-2 border-gray-500 mb-10 transition-all duration-500"
-                />
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100  transition-opacity bg-black bg-opacity-50 duration-500 rounded-3xl">
-                  <span className={`text-white text-7xl font-semibold ${montserrat.className} bg-opacity-50 px-4 py-2 rounded-3xl`}>
-                    {service.text}
-                  </span>
-                </div>
+            <Link href={service.href} key={index} className="relative group rounded-3xl overflow-hidden border shadow hover:shadow-lg transition">
+              <Image src={service.src} alt={service.alt} className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition">
+                <span className={`text-white text-2xl md:text-3xl font-bold ${montserrat.className}`}>{service.text}</span>
               </div>
             </Link>
           ))}
         </div>
+      </section>
 
-      </div>
+      {/* Divider */}
+      {/* <div className="w-11/12 max-w-4xl h-[2px] bg-gray-200 mt-16 mx-auto"></div>
 
-      {/* Line */}
-      <div className="w-3/4 mx-auto  h-1 bg-gray-400 mt-10"></div>
-
-
-      <div className="px-10 pt-20 flex flex-col" id="merch">
-        <h1 className={`text-5xl font-semibold text-gray-900 ${montserrat.className} text-center mb-10 `}>Merch</h1>
-        <div className="flex flex-row items-center justify-center space-x-6">
-          <div className="relative w-4/5 h-[35rem] group">
-            <Image
-              src={jersey}
-              alt="Jersey"
-              className="w-full h-full rounded-3xl border-2 object-cover border-gray-500  transition-all duration-300 scale-100 hover:scale-105 p-2"
-            />
-            <div className={`absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-5xl font-semibold ${montserrat.className} opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl`}>
-              Jersey
+      {/* MERCH */}
+      {/* <section className="px-4 md:px-10 pt-20" id="merch">
+        <h1 className={`text-3xl md:text-5xl font-bold text-gray-900 ${montserrat.className} text-center mb-12`}>
+          Merch
+        </h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          {[{ src: jersey, alt: "Jersey" }, { src: gears, alt: "Gears" }].map((item, idx) => (
+            <div key={idx} className="relative group rounded-3xl overflow-hidden border shadow hover:shadow-lg transition">
+              <Image src={item.src} alt={item.alt} className="w-full h-96 object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-2xl md:text-4xl font-bold opacity-0 group-hover:opacity-100 transition">
+                {item.alt}
+              </div>
             </div>
-          </div>
-
-          <div className="relative w-4/5 h-[35rem] group">
-            <Image
-              src={gears}
-              alt="Gears"
-              className="w-full h-full rounded-3xl border-2 object-cover border-gray-500  transition-all duration-300 scale-100 hover:scale-105 p-2"
-            />
-            <div className={`absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-5xl font-semibold ${montserrat.className} opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl`}>
-              Gears
-            </div>
-          </div>
+          ))}
         </div>
+      </section> */} 
 
-      </div>
+      {/* Divider */}
+      <div className="w-11/12 max-w-4xl h-[2px] bg-gray-200 mt-16 mx-auto"></div>
 
-
-
-      {/* Line */}
-      <div className="w-3/4 h-1 bg-gray-400 mt-10 mx-auto"></div>
-      <div className="px-10 pt-20 flex flex-col" id="about">
-        <h1 className={`text-5xl font-semibold text-gray-900 ${montserrat.className} text-center mb-10 `}>About</h1>
-        <p className={`text-lg text-gray-500 text-center mb-10 ${montserrat.className}`}>Sportwave is your ultimate platform for connecting with players, teams, and sporting events effortlessly. <br />Whether you're an amateur looking for a local match,<br /> a professional seeking competitive games, or an organizer managing tournaments,<br /> Sportwave brings the sports community together in one place. <br />Sportwave is a platform that allows you to find players, teams, and events at your fingertips.</p>
-
-      </div>
-
+      {/* ABOUT */}
+      <section className="px-4 md:px-10 pt-20 pb-24" id="about">
+        <h1 className={`text-3xl md:text-5xl font-bold text-gray-900 ${montserrat.className} text-center mb-8`}>
+          About Us
+        </h1>
+        <p className={`text-base md:text-lg text-gray-600 max-w-3xl mx-auto text-center leading-relaxed ${montserrat.className}`}>
+          Sportwave is your ultimate platform for connecting with players, teams, and sporting events effortlessly. Whether you're an amateur looking for a local match, a professional seeking competitive games, or an organizer managing tournaments, Sportwave brings the sports community together in one place.
+        </p>
+      </section>
     </div>
-
   )
 }

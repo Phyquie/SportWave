@@ -11,7 +11,7 @@ export const useCustomMutation = (
     }: {
         onSuccess?: (data: any) => void;
         onError?: (error: any) => void;
-    }
+    } = {}
 ) => {
     const mutation = useMutation({
         mutationFn: async (data: any) => {

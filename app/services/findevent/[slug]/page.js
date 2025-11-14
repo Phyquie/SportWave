@@ -5,6 +5,7 @@ import { useCustomQuery } from '@/custom_hooks/customQuery';
 import CustomImageSlider from '@/app/components/CustomImageSlider';
 import { useCustomMutation } from '@/custom_hooks/customMutation';
 import toast from 'react-hot-toast';
+import ReadOnlyMap from '@/app/components/ReadOnlyMap';
 
 const EventDetails = ({ params }) => {
   const slug = use(params).slug;
@@ -90,6 +91,8 @@ const EventDetails = ({ params }) => {
           <h2 className='text-sm font-medium text-gray-700'>Detailed Location</h2>
           <p className='p-2 bg-gray-100 rounded-md'>{eventData?.event?.detailedLocation}</p>
         </div>
+
+        <ReadOnlyMap lat={eventData?.event?.lat} lng={eventData?.event?.lng} />
 
         <div className='space-y-2 mt-4'>
           <h2 className='text-sm font-medium text-gray-700'>Pin Code</h2>
